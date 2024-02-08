@@ -4,6 +4,12 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 
+const Title = ({text}) => {
+  return (
+    <h1>{text}</h1>
+  )
+}
+
 const Anecdote = ({anecdote}) => {
   return <div>{anecdote}</div>
 }
@@ -13,6 +19,14 @@ const Button = ({handleClick, text}) => {
     <button onClick={handleClick}>
       {text}
     </button>
+  )
+}
+
+const Votes = ({votes, selected}) => {
+  return (
+    <p>
+      Has {votes[selected]} votes
+    </p>
   )
 }
 
@@ -27,18 +41,34 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
+
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0))
+
   const [selected, setSelected] = useState(0)
 
   const setToSelected = ({anecdotes}) => {
     setSelected(getRandomInt(anecdotes.length))
   }
 
+  const setToPoints = ({selected, points}) => {
+    const copy = [...points]
+    copy[selected] += 1
+
+    console.log(copy)
+    setPoints(copy)
+  }
+
   return (
     <div>
+      <Title text="Anecdote of the day"/>
       <Anecdote anecdote={anecdotes[selected]}/>
       <br/>
+      <Votes votes={points} selected={selected}/>
+      <br/>
       <Button handleClick={() => setToSelected({anecdotes})} text="next anecdote"/>
+      <Button handleClick={() => setToPoints({selected, points})} text="vote"/>
+      <Title text="Anecdote with most votes"/>
+      <Anecdote anecdote={anecdotes[points.indexOf(Math.max(...points))]}/>
     </div>
   )
 }
